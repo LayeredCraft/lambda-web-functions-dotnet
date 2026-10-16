@@ -39,8 +39,6 @@ dotnet add package LayeredCraft.LambdaWebFunctions.Hosting
 Call `ConfigureWebFunctionHosting` immediately after creating the application builder:
 
 ```csharp
-using LayeredCraft.LambdaWebFunctions.Hosting;
-
 var builder = WebApplication.CreateSlimBuilder(args);
 builder.ConfigureWebFunctionHosting();
 
@@ -58,7 +56,8 @@ var builder = WebApplication.CreateSlimBuilder(args)
 ```
 
 The API targets `IHostApplicationBuilder`, not `WebApplicationBuilder`. It also works with worker
-hosts and does not require the package itself to reference `Microsoft.AspNetCore.App`.
+hosts and does not require the package itself to reference `Microsoft.AspNetCore.App`. The extension
+is defined in `Microsoft.Extensions.Hosting` so it is available through the SDK's implicit using.
 
 ## Lambda behavior
 
