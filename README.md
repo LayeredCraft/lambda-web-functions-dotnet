@@ -21,7 +21,7 @@ it listens on the address Lambda chose and sends ready only after the host is st
 
 ## Requirements
 
-- .NET 9, 10, or 11
+- .NET 10 or 11
 - An AWS Lambda Web Function using the `nodejs24.x` runtime
 - A deployment package containing an `index.js` shim and your published .NET executable
 
