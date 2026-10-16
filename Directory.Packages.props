@@ -8,10 +8,18 @@
     <PackageVersion Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.12.0" />
     <PackageVersion Include="xunit.v3.mtp-v2" Version="4.0.2" />
   </ItemGroup>
+  <!-- The library depends on Hosting.Abstractions. On net11 the shared framework provides
+       Microsoft.Extensions.Hosting.Abstractions, so the SDK prunes the reference and it never
+       lands in the nuspec; the net10 range uses a stable upper bound so a stable package does
+       not declare a prerelease dependency (NU5104). Tests use the concrete HostApplicationBuilder
+       from the full Microsoft.Extensions.Hosting package. -->
   <ItemGroup Label="Microsoft Extensions net10" Condition="'$(TargetFramework)' == 'net10.0'">
-    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="[10.0.12, 11.0.0-a)" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="[10.0.12, 11.0.0)" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="[10.0.12, 11.0.0)" />
   </ItemGroup>
   <ItemGroup Label="Microsoft Extensions net11" Condition="'$(TargetFramework)' == 'net11.0'">
+    <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions"
+                    Version="[11.0.0-preview.5.26302.115, 12.0.0-a)" />
     <PackageVersion Include="Microsoft.Extensions.Hosting"
                     Version="[11.0.0-rc.2.26504.105, 12.0.0-a)" />
   </ItemGroup>
