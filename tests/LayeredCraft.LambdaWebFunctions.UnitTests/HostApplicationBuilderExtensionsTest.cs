@@ -9,6 +9,24 @@ namespace LayeredCraft.LambdaWebFunctions.UnitTests;
 
 public sealed class HostApplicationBuilderExtensionsTest
 {
+    [Theory]
+    [InlineData(null, false)]
+    [InlineData("", false)]
+    [InlineData("value", true)]
+    public void TryGetEnvironmentVariable_ReturnsWhetherTheValueIsNonEmpty(
+        string? value,
+        bool expected)
+    {
+        using var variable = new EnvironmentVariableScope("LAMBDA_WEB_FUNCTIONS_TEST", value);
+
+        var found = Environment.TryGetEnvironmentVariable(
+            "LAMBDA_WEB_FUNCTIONS_TEST",
+            out var actual);
+
+        found.Should().Be(expected);
+        actual.Should().Be(value);
+    }
+
     [Fact]
     public void ConfigureWebFunctionHosting_WhenLambdaVariablesAreAbsent_DoesNotConfigureHost()
     {
@@ -22,7 +40,9 @@ public sealed class HostApplicationBuilderExtensionsTest
 
         // Assert
         builder.Configuration["urls"].Should().BeNull();
-        builder.Services.Should()
+        builder
+            .Services
+            .Should()
             .NotContain(descriptor => descriptor.ServiceType == typeof(IHostedService));
     }
 
@@ -44,7 +64,12 @@ public sealed class HostApplicationBuilderExtensionsTest
         configured.Should().BeSameAs(builder);
         builder.Configuration["urls"].Should().Be("http://127.0.0.1:9000");
         using var services = builder.Services.BuildServiceProvider();
-        services.GetServices<IHostedService>().Should().ContainSingle().Which.Should()
+        services
+            .GetServices<IHostedService>()
+            .Should()
+            .ContainSingle()
+            .Which
+            .Should()
             .BeAssignableTo<IHostedLifecycleService>();
     }
 }
@@ -56,14 +81,16 @@ public sealed class LambdaRuntimeReadyTest
     {
         // Arrange
         var handler = new StubHandler(HttpStatusCode.OK);
-        var service = new LambdaRuntimeReady("runtime-api:9001", handler: handler);
+        var service = new LambdaRuntimeReady("runtime-api:9001", handler);
 
         // Act
         await service.StartedAsync(CancellationToken.None);
 
         // Assert
         handler.Request!.Method.Should().Be(HttpMethod.Post);
-        handler.Request.RequestUri!.ToString().Should()
+        handler.Request.RequestUri!
+            .ToString()
+            .Should()
             .Be("http://runtime-api:9001/2025-09-01/ready");
         handler.Body.Should().Be("{}");
     }
@@ -72,8 +99,9 @@ public sealed class LambdaRuntimeReadyTest
     public async Task StartedAsync_WhenRuntimeReturnsFailure_Throws()
     {
         // Arrange
-        var service = new LambdaRuntimeReady("runtime-api:9001",
-            handler: new StubHandler(HttpStatusCode.BadGateway));
+        var service = new LambdaRuntimeReady(
+            "runtime-api:9001",
+            new StubHandler(HttpStatusCode.BadGateway));
 
         // Act
         var act = () => service.StartedAsync(CancellationToken.None);
@@ -91,8 +119,7 @@ public sealed class LambdaRuntimeReadyTest
         var builder = Host.CreateApplicationBuilder();
         builder.Services.AddSingleton(marker);
         builder.Services.AddHostedService<MarkerHostedService>();
-        builder.Services.AddHostedService(_ =>
-            new LambdaRuntimeReady("runtime-api:9001", handler: handler));
+        builder.Services.AddHostedService(_ => new LambdaRuntimeReady("runtime-api:9001", handler));
         using var host = builder.Build();
 
         // Act
@@ -112,7 +139,8 @@ public sealed class LambdaRuntimeReadyTest
         public string? Body { get; private set; }
 
         protected override async Task<HttpResponseMessage> SendAsync(
-            HttpRequestMessage request, CancellationToken cancellationToken)
+            HttpRequestMessage request,
+            CancellationToken cancellationToken)
         {
             Request = request;
             Body = await request.Content!.ReadAsStringAsync(cancellationToken);
@@ -134,10 +162,7 @@ public sealed class LambdaRuntimeReadyTest
             return Task.CompletedTask;
         }
 
-        public Task StopAsync(CancellationToken cancellationToken)
-        {
-            return Task.CompletedTask;
-        }
+        public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
     }
 }
 
@@ -153,8 +178,5 @@ internal sealed class EnvironmentVariableScope : IDisposable
         Environment.SetEnvironmentVariable(name, value);
     }
 
-    public void Dispose()
-    {
-        Environment.SetEnvironmentVariable(_name, _previous);
-    }
+    public void Dispose() => Environment.SetEnvironmentVariable(_name, _previous);
 }

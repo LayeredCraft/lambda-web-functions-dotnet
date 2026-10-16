@@ -8,25 +8,25 @@ namespace LayeredCraft.LambdaWebFunctions;
 /// </summary>
 public static class HostApplicationBuilderExtensions
 {
-    /// <summary>
-    /// Binds the host to Lambda's HTTP endpoint and signals ready after it starts listening.
-    /// </summary>
-    /// <typeparam name="TBuilder">The concrete host builder type.</typeparam>
     /// <param name="builder">The host builder to configure.</param>
-    /// <returns><paramref name="builder" />.</returns>
-    public static TBuilder ConfigureWebFunctionHosting<TBuilder>(this TBuilder builder)
-        where TBuilder : IHostApplicationBuilder
+    /// <typeparam name="TBuilder">The concrete host builder type.</typeparam>
+    extension<TBuilder>(TBuilder builder) where TBuilder : IHostApplicationBuilder
     {
-        ArgumentNullException.ThrowIfNull(builder);
+        /// <summary>
+        /// Binds the host to Lambda's HTTP endpoint and signals ready after it starts listening.
+        /// </summary>
+        /// <returns><paramref name="builder" />.</returns>
+        public TBuilder ConfigureWebFunctionHosting()
+        {
+            ArgumentNullException.ThrowIfNull(builder);
 
-        var endpoint = Environment.GetEnvironmentVariable("AWS_LAMBDA_HTTP_ENDPOINT");
-        if (endpoint is { Length: > 0 })
-            builder.Configuration["urls"] = $"http://{endpoint}";
+            if (Environment.TryGetEnvironmentVariable("AWS_LAMBDA_HTTP_ENDPOINT", out var endpoint))
+                builder.Configuration["urls"] = $"http://{endpoint}";
 
-        var runtimeApi = Environment.GetEnvironmentVariable("AWS_LAMBDA_RUNTIME_API");
-        if (runtimeApi is { Length: > 0 })
-            builder.Services.AddHostedService(_ => new LambdaRuntimeReady(runtimeApi));
+            if (Environment.TryGetEnvironmentVariable("AWS_LAMBDA_RUNTIME_API", out var runtimeApi))
+                builder.Services.AddHostedService(_ => new LambdaRuntimeReady(runtimeApi));
 
-        return builder;
+            return builder;
+        }
     }
 }
