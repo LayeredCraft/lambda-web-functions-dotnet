@@ -8,5 +8,5 @@ tasks:
   format:cleanupcode:
     cmds:
       - dotnet tool restore
-      - dotnet restore LayeredCraft.LambdaWebFunctions.Hosting.slnx
-      - 'dotnet tool run jb cleanupcode LayeredCraft.LambdaWebFunctions.Hosting.slnx --profile="Built-in: Reformat & Apply Syntax Style" --verbosity=FATAL --no-build'
+      - dotnet restore LayeredCraft.LambdaWebFunctions.slnx
+      - 'dotnet tool run jb cleanupcode LayeredCraft.LambdaWebFunctions.slnx --profile="Built-in: Reformat & Apply Syntax Style" --verbosity=FATAL --no-build'

@@ -11,7 +11,7 @@ jobs:
   application-build:
     uses: LayeredCraft/devops-templates/.github/workflows/pr-build.yaml@v11.2
     with:
-      solution: LayeredCraft.LambdaWebFunctions.Hosting.slnx
+      solution: LayeredCraft.LambdaWebFunctions.slnx
       dotnetVersion: 11.0.x
       hasTests: true
       useMtpRunner: true
