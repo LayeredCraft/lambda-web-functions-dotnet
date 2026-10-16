@@ -22,14 +22,19 @@ internal sealed class LambdaRuntimeReady(string runtimeApi, HttpMessageHandler? 
     public async Task StartedAsync(CancellationToken cancellationToken)
     {
         var disposeHandler = handler is null;
+
+        // ReSharper disable once ShortLivedHttpClient
         using var client = new HttpClient(
             handler ?? new SocketsHttpHandler { UseProxy = false },
-            disposeHandler) { Timeout = ReadyTimeout };
+            disposeHandler);
+        client.Timeout = ReadyTimeout;
+
         using var content = new StringContent("{}", Encoding.UTF8, "application/json");
         using var response =
             await client
                 .PostAsync($"http://{runtimeApi}{ReadyPath}", content, cancellationToken)
                 .ConfigureAwait(false);
+
         response.EnsureSuccessStatusCode();
     }
 }
