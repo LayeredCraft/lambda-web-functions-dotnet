@@ -8,6 +8,6 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference
-      Include="../../src/LayeredCraft.LambdaWebFunctions/LayeredCraft.LambdaWebFunctions.csproj" />
+      Include="../../src/LayeredCraft.LambdaWebFunctions.Hosting/LayeredCraft.LambdaWebFunctions.Hosting.csproj" />
   </ItemGroup>
 </Project>

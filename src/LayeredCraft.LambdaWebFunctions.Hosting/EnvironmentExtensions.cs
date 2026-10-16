@@ -1,6 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 
-namespace LayeredCraft.LambdaWebFunctions;
+namespace LayeredCraft.LambdaWebFunctions.Hosting;
 
 internal static class EnvironmentExtensions
 {

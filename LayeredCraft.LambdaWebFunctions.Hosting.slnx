@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="src/LayeredCraft.LambdaWebFunctions.Hosting/LayeredCraft.LambdaWebFunctions.Hosting.csproj" />
+  <Project Path="tests/LayeredCraft.LambdaWebFunctions.Hosting.UnitTests/LayeredCraft.LambdaWebFunctions.Hosting.UnitTests.csproj" />
+  <Project Path="examples/LambdaWebFunctions.Hosting.NativeAotExample/LambdaWebFunctions.Hosting.NativeAotExample.csproj" />
+</Solution>

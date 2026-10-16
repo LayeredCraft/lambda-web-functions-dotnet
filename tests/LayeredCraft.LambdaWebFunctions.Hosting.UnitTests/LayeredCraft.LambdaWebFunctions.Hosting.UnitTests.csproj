@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <AssemblyName>LayeredCraft.LambdaWebFunctions.UnitTests</AssemblyName>
+    <AssemblyName>LayeredCraft.LambdaWebFunctions.Hosting.UnitTests</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="AwesomeAssertions" />
@@ -9,6 +9,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference
-      Include="../../src/LayeredCraft.LambdaWebFunctions/LayeredCraft.LambdaWebFunctions.csproj" />
+      Include="../../src/LayeredCraft.LambdaWebFunctions.Hosting/LayeredCraft.LambdaWebFunctions.Hosting.csproj" />
   </ItemGroup>
 </Project>

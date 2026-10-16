@@ -1,7 +1,7 @@
 using System.Text;
 using Microsoft.Extensions.Hosting;
 
-namespace LayeredCraft.LambdaWebFunctions;
+namespace LayeredCraft.LambdaWebFunctions.Hosting;
 
 internal sealed class LambdaRuntimeReady(string runtimeApi, HttpMessageHandler? handler = null)
     : IHostedLifecycleService

@@ -1,6 +1,6 @@
-# LayeredCraft.LambdaWebFunctions
+# LayeredCraft.LambdaWebFunctions.Hosting
 
-`LayeredCraft.LambdaWebFunctions` configures an ASP.NET Core host for an AWS Lambda Web Function.
+`LayeredCraft.LambdaWebFunctions.Hosting` configures an ASP.NET Core host for an AWS Lambda Web Function.
 It does two things when Lambda supplies its Web Function environment variables:
 
 1. Configures Kestrel to listen on `AWS_LAMBDA_HTTP_ENDPOINT`.
@@ -31,7 +31,7 @@ environment variables it reads.
 ## Install
 
 ```bash
-dotnet add package LayeredCraft.LambdaWebFunctions
+dotnet add package LayeredCraft.LambdaWebFunctions.Hosting
 ```
 
 ## Use
@@ -39,7 +39,7 @@ dotnet add package LayeredCraft.LambdaWebFunctions
 Call `ConfigureWebFunctionHosting` immediately after creating the application builder:
 
 ```csharp
-using LayeredCraft.LambdaWebFunctions;
+using LayeredCraft.LambdaWebFunctions.Hosting;
 
 var builder = WebApplication.CreateSlimBuilder(args);
 builder.ConfigureWebFunctionHosting();

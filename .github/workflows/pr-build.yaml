@@ -11,7 +11,7 @@ jobs:
   application-build:
     uses: LayeredCraft/devops-templates/.github/workflows/pr-build.yaml@v11.2
     with:
-      solution: LayeredCraft.Lambda.WebFunctions.slnx
+      solution: LayeredCraft.LambdaWebFunctions.Hosting.slnx
       dotnetVersion: 11.0.x
       hasTests: true
       useMtpRunner: true
@@ -28,7 +28,7 @@ jobs:
       - uses: actions/setup-dotnet@v6
         with:
           global-json-file: global.json
-      - run: dotnet publish examples/LambdaWebFunctions.NativeAotExample/LambdaWebFunctions.NativeAotExample.csproj --configuration Release --runtime linux-x64 --self-contained true --output artifacts/nativeaot
+      - run: dotnet publish examples/LambdaWebFunctions.Hosting.NativeAotExample/LambdaWebFunctions.Hosting.NativeAotExample.csproj --configuration Release --runtime linux-x64 --self-contained true --output artifacts/nativeaot
       - run: |
           AWS_LAMBDA_HTTP_ENDPOINT=127.0.0.1:8080 artifacts/nativeaot/server &
           server_pid=$!

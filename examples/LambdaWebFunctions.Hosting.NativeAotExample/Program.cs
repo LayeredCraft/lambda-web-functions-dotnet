@@ -1,4 +1,4 @@
-using LayeredCraft.LambdaWebFunctions;
+using LayeredCraft.LambdaWebFunctions.Hosting;
 
 var builder = WebApplication.CreateSlimBuilder(args);
 builder.ConfigureWebFunctionHosting();

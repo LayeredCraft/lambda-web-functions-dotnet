@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace LayeredCraft.LambdaWebFunctions;
+namespace LayeredCraft.LambdaWebFunctions.Hosting;
 
 /// <summary>
 /// Configures a host to run as an AWS Lambda Web Function.

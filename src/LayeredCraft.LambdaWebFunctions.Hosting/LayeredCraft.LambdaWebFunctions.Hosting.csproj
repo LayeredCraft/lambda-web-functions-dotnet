@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <PackageId>LayeredCraft.LambdaWebFunctions</PackageId>
+    <PackageId>LayeredCraft.LambdaWebFunctions.Hosting</PackageId>
     <Description>Configures ASP.NET Core hosts for AWS Lambda Web Functions.</Description>
     <PackageIcon>icon.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>

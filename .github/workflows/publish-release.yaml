@@ -13,7 +13,7 @@ jobs:
       contents: write
     uses: LayeredCraft/devops-templates/.github/workflows/publish-release.yml@v11.2
     with:
-      solution: LayeredCraft.Lambda.WebFunctions.slnx
+      solution: LayeredCraft.LambdaWebFunctions.Hosting.slnx
       dotnetVersion: 11.0.x
       hasTests: true
       buildConfiguration: Release

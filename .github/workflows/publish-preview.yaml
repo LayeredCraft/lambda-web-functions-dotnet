@@ -15,7 +15,7 @@ jobs:
       pull-requests: write
     uses: LayeredCraft/devops-templates/.github/workflows/publish-preview.yml@v11.2
     with:
-      solution: LayeredCraft.Lambda.WebFunctions.slnx
+      solution: LayeredCraft.LambdaWebFunctions.Hosting.slnx
       dotnetVersion: 11.0.x
       prereleaseIdentifier: preview
       hasTests: true

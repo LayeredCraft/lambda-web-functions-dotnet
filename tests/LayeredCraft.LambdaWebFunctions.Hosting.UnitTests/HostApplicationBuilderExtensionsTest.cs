@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Xunit;
 
-namespace LayeredCraft.LambdaWebFunctions.UnitTests;
+namespace LayeredCraft.LambdaWebFunctions.Hosting.UnitTests;
 
 public sealed class HostApplicationBuilderExtensionsTest
 {
