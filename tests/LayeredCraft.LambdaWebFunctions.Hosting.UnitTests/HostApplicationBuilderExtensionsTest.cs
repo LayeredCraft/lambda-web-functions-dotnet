@@ -9,31 +9,11 @@ namespace LayeredCraft.LambdaWebFunctions.Hosting.UnitTests;
 
 public sealed class HostApplicationBuilderExtensionsTest
 {
-    [Theory]
-    [InlineData(null, false)]
-    [InlineData("", false)]
-    [InlineData("value", true)]
-    public void TryGetEnvironmentVariable_ReturnsWhetherTheValueIsNonEmpty(
-        string? value,
-        bool expected)
-    {
-        using var variable = new EnvironmentVariableScope("LAMBDA_WEB_FUNCTIONS_TEST", value);
-
-        var found = Environment.TryGetEnvironmentVariable(
-            "LAMBDA_WEB_FUNCTIONS_TEST",
-            out var actual);
-
-        found.Should().Be(expected);
-        actual.Should().Be(value);
-    }
-
     [Fact]
-    public void ConfigureWebFunctionHosting_WhenLambdaVariablesAreAbsent_DoesNotConfigureHost()
+    public void ConfigureWebFunctionHosting_WhenLambdaConfigurationIsAbsent_DoesNotConfigureHost()
     {
         // Arrange
-        using var endpoint = new EnvironmentVariableScope("AWS_LAMBDA_HTTP_ENDPOINT", null);
-        using var runtimeApi = new EnvironmentVariableScope("AWS_LAMBDA_RUNTIME_API", null);
-        var builder = Host.CreateApplicationBuilder();
+        var builder = CreateBuilder();
 
         // Act
         builder.ConfigureWebFunctionHosting();
@@ -48,14 +28,12 @@ public sealed class HostApplicationBuilderExtensionsTest
 
     [Fact]
     public void
-        ConfigureWebFunctionHosting_WhenLambdaVariablesArePresent_ConfiguresEndpointAndReadyService()
+        ConfigureWebFunctionHosting_WhenLambdaConfigurationIsPresent_ConfiguresEndpointAndReadyService()
     {
         // Arrange
-        using var endpoint =
-            new EnvironmentVariableScope("AWS_LAMBDA_HTTP_ENDPOINT", "127.0.0.1:9000");
-        using var runtimeApi =
-            new EnvironmentVariableScope("AWS_LAMBDA_RUNTIME_API", "127.0.0.1:9001");
-        var builder = Host.CreateApplicationBuilder();
+        var builder = CreateBuilder();
+        builder.Configuration["AWS_LAMBDA_HTTP_ENDPOINT"] = "127.0.0.1:9000";
+        builder.Configuration["AWS_LAMBDA_RUNTIME_API"] = "127.0.0.1:9001";
 
         // Act
         var configured = builder.ConfigureWebFunctionHosting();
@@ -72,6 +50,46 @@ public sealed class HostApplicationBuilderExtensionsTest
             .Should()
             .BeAssignableTo<IHostedLifecycleService>();
     }
+
+    [Fact]
+    public void
+        ConfigureWebFunctionHosting_WhenLambdaConfigurationIsWhitespace_DoesNotConfigureHost()
+    {
+        // Arrange
+        var builder = CreateBuilder();
+        builder.Configuration["AWS_LAMBDA_HTTP_ENDPOINT"] = " ";
+        builder.Configuration["AWS_LAMBDA_RUNTIME_API"] = " ";
+
+        // Act
+        builder.ConfigureWebFunctionHosting();
+
+        // Assert
+        builder.Configuration["urls"].Should().BeNull();
+        builder
+            .Services
+            .Should()
+            .NotContain(descriptor => descriptor.ServiceType == typeof(IHostedService));
+    }
+
+    [Fact]
+    public void ConfigureWebFunctionHosting_WhenCalledMoreThanOnce_RegistersOneReadyService()
+    {
+        // Arrange
+        var builder = CreateBuilder();
+        builder.Configuration["AWS_LAMBDA_RUNTIME_API"] = "127.0.0.1:9001";
+
+        // Act
+        builder.ConfigureWebFunctionHosting();
+        builder.ConfigureWebFunctionHosting();
+
+        // Assert
+        using var services = builder.Services.BuildServiceProvider();
+        services.GetServices<IHostedService>().Should().ContainSingle();
+    }
+
+    private static HostApplicationBuilder CreateBuilder()
+        => Host.CreateApplicationBuilder(
+            new HostApplicationBuilderSettings { DisableDefaults = true });
 }
 
 public sealed class LambdaRuntimeReadyTest
@@ -164,19 +182,4 @@ public sealed class LambdaRuntimeReadyTest
 
         public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
     }
-}
-
-internal sealed class EnvironmentVariableScope : IDisposable
-{
-    private readonly string _name;
-    private readonly string? _previous;
-
-    public EnvironmentVariableScope(string name, string? value)
-    {
-        _name = name;
-        _previous = Environment.GetEnvironmentVariable(name);
-        Environment.SetEnvironmentVariable(name, value);
-    }
-
-    public void Dispose() => Environment.SetEnvironmentVariable(_name, _previous);
 }

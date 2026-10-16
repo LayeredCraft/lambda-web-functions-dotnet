@@ -62,11 +62,12 @@ hosts and does not require the package itself to reference `Microsoft.AspNetCore
 
 ## Lambda behavior
 
-When `AWS_LAMBDA_HTTP_ENDPOINT` is non-empty, the extension sets the host's `urls` configuration
-value to `http://<endpoint>`. ASP.NET Core then binds Kestrel to Lambda's host and port.
+When `AWS_LAMBDA_HTTP_ENDPOINT` is non-empty in host configuration, the extension sets the host's
+`urls` configuration value to `http://<endpoint>`. ASP.NET Core then binds Kestrel to Lambda's host
+and port. Lambda environment variables are included in the default host configuration.
 
-When `AWS_LAMBDA_RUNTIME_API` is non-empty, the extension registers an internal lifecycle hosted
-service. Its `StartedAsync` method sends this request:
+When `AWS_LAMBDA_RUNTIME_API` is non-empty in host configuration, the extension registers an
+internal lifecycle hosted service. Its `StartedAsync` method sends this request:
 
 ```text
 POST http://$AWS_LAMBDA_RUNTIME_API/2025-09-01/ready
@@ -109,6 +110,10 @@ dotnet publish --configuration Release --runtime linux-arm64 --self-contained tr
 
 Copy the resulting executable to the deployment zip as `server`, add the shim as `index.js`, and
 include any application configuration files your app needs.
+
+The `nodejs24.x` Web Function runtime does not include `libicu`. The example uses invariant
+globalization; an application that needs culture data must bundle app-local ICU and configure
+`System.Globalization.AppLocalIcu`.
 
 ## Limits
 
