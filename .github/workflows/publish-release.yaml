@@ -1,0 +1,30 @@
+name: Publish Release
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    permissions:
+      contents: write
+    uses: LayeredCraft/devops-templates/.github/workflows/publish-release.yml@v11.2
+    with:
+      solution: LayeredCraft.LambdaWebFunctions.slnx
+      dotnetVersion: 11.0.x
+      hasTests: true
+      buildConfiguration: Release
+
+  push:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: LayeredCraft/devops-templates/.github/actions/nuget-push@v11.2
+        with:
+          nuget_user: ${{ secrets.NUGET_USER }}

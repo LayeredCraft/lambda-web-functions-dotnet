@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>LayeredCraft.LambdaWebFunctions.Hosting.UnitTests</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="AwesomeAssertions" />
+    <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" />
+    <PackageReference Include="xunit.v3.mtp-v2" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference
+      Include="../../src/LayeredCraft.LambdaWebFunctions.Hosting/LayeredCraft.LambdaWebFunctions.Hosting.csproj" />
+  </ItemGroup>
+</Project>

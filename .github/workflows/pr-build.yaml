@@ -1,0 +1,62 @@
+name: PR Build
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  application-build:
+    uses: LayeredCraft/devops-templates/.github/workflows/pr-build.yaml@v11.2
+    with:
+      solution: LayeredCraft.LambdaWebFunctions.slnx
+      dotnetVersion: 11.0.x
+      hasTests: true
+      useMtpRunner: true
+      enableCodeCoverage: true
+      coverageThreshold: 80
+      testResultsArtifact: true
+      runCdk: false
+
+  native-aot:
+    name: native AOT
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+      - run: dotnet publish examples/LambdaWebFunctions.Hosting.NativeAotExample/LambdaWebFunctions.Hosting.NativeAotExample.csproj --configuration Release --runtime linux-x64 --self-contained true --output artifacts/nativeaot
+      - run: |
+          AWS_LAMBDA_HTTP_ENDPOINT=127.0.0.1:8080 artifacts/nativeaot/server &
+          server_pid=$!
+          trap 'kill $server_pid' EXIT
+          for attempt in $(seq 1 20); do
+            curl --fail --silent http://127.0.0.1:8080/health && exit 0
+            sleep 1
+          done
+          exit 1
+
+  format:
+    name: format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+      - uses: go-task/setup-task@v2
+      - run: task format:cleanupcode
+      - run: git diff --exit-code
+
+  build:
+    name: build / build
+    needs: [application-build, native-aot, format]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - run: test "${{ needs.application-build.result }}" = success
+      - run: test "${{ needs.native-aot.result }}" = success
+      - run: test "${{ needs.format.result }}" = success

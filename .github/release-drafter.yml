@@ -1,0 +1,31 @@
+name-template: 'v$RESOLVED_VERSION'
+tag-template: 'v$RESOLVED_VERSION'
+
+autolabeler:
+  - label: 'type: feat'
+    title: ['/^feat(\\([^)]*\\))?:/i']
+  - label: 'type: fix'
+    title: ['/^fix(\\([^)]*\\))?:/i']
+  - label: 'type: docs'
+    title: ['/^docs(\\([^)]*\\))?:/i']
+  - label: 'type: ci'
+    title: ['/^ci(\\([^)]*\\))?:/i']
+
+categories:
+  - title: 'Features'
+    labels: ['type: feat']
+  - title: 'Fixes'
+    labels: ['type: fix']
+  - title: 'Documentation'
+    labels: ['type: docs']
+  - title: 'Maintenance'
+    labels: ['type: ci']
+
+version-resolver:
+  major:
+    labels: ['breaking-change']
+  minor:
+    labels: ['type: feat']
+  patch:
+    labels: ['type: fix', 'type: docs', 'type: ci']
+  default: patch

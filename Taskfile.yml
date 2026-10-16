@@ -1,0 +1,12 @@
+version: '3'
+
+tasks:
+  format:
+    cmds:
+      - task: format:cleanupcode
+
+  format:cleanupcode:
+    cmds:
+      - dotnet tool restore
+      - dotnet restore LayeredCraft.LambdaWebFunctions.slnx
+      - 'dotnet tool run jb cleanupcode LayeredCraft.LambdaWebFunctions.slnx --profile="Built-in: Reformat & Apply Syntax Style" --verbosity=FATAL --no-build'
