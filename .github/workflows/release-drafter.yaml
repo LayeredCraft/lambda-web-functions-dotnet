@@ -2,7 +2,8 @@ name: Release Drafter
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
     types: [opened, edited, synchronize, reopened, ready_for_review]
   workflow_dispatch:
@@ -12,21 +13,8 @@ permissions:
   pull-requests: write
 
 jobs:
-  autolabel:
-    if: github.event_name == 'pull_request' && github.event.pull_request.draft == false
-    runs-on: ubuntu-latest
-    steps:
-      - uses: release-drafter/release-drafter/autolabeler@v7
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
   draft:
-    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: release-drafter/release-drafter@v7
-        with:
-          config-name: release-drafter.yml
-          disable-autolabeler: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    uses: LayeredCraft/devops-templates/.github/workflows/release-drafter.yml@v10.8
+    with:
+      event_name: ${{ github.event_name }}
+      pr_draft: ${{ github.event.pull_request.draft == true }}
