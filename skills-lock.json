@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "dynamodb-efcore-provider": {
+      "source": "LayeredCraft/dynamodb-efcore-provider",
+      "sourceType": "github",
+      "skillPath": "skills/dynamodb-efcore-provider/SKILL.md",
+      "computedHash": "8049bdc24fdff026424ccd0b452725995ca33f04d8efd3b6c5e8cd50fdac0c8e"
+    }
+  }
+}
